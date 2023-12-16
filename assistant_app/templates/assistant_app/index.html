@@ -1,0 +1,44 @@
+<!-- assistant_app/templates/assistant_app/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cody, your virtual assistant</title>
+</head>
+<body>
+    <h1>Hi I am Cody, what do you want to know?</h1>
+    <form id="queryForm">
+        <label for="query">Pregunta:</label>
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Enviar</button>
+    </form>
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('queryForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            
+            const query = document.getElementById('query').value;
+
+            fetch('http://127.0.0.1:8000/get_response/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `query=${encodeURIComponent(query)}`,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('response').innerText = data.response;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('response').innerText = 'Error al procesar la solicitud.';
+                });
+        });
+    </script>
+</body>
+</html>
